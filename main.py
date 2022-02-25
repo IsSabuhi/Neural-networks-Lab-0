@@ -3,9 +3,10 @@ from PIL import Image, ImageDraw, ImageOps
 import PIL
 import numpy as np
 from tkinter import *
+import math
 
-width = 40
-height = 40
+width = 80
+height = 80
 n = 2
 white = (255, 255, 255)
 
@@ -14,16 +15,24 @@ def recognize():
 
     inverted_img = ImageOps.invert(image)
     grayscaled_img = inverted_img.convert('L')
-    resized_img = grayscaled_img.resize((40, 40), PIL.Image.ANTIALIAS)
+    resized_img = grayscaled_img.resize((80, 80), PIL.Image.ANTIALIAS)
 
     img = np.asarray(resized_img, dtype='uint8')
     img01 = img / 255
 
     np.set_printoptions(threshold=np.inf)
 
-    w = [[round(random.uniform(-0.3, 0.3), 2) for y in range(width)] for x in range(height)]
+    w = np.matrix([[round(random.uniform(-0.3, 0.3), 2) for y in range(width)] for x in range(height)])
 
     w1 = np.dot(img01, w)
+    sum_w1 = np.sum(w1)
+    print(sum_w1)
+
+    # np.savetxt("test.csv", w, delimiter=",")
+    # print("Успешно сохранены веса из первого слоя.")
+
+    # lbl1['text']=np.argmax(w1),
+    # lbl2['text']='Probability:',probability,'%'
 
 
 def paint(event):
@@ -52,11 +61,13 @@ cv.bind("<B1-Motion>", paint)
 
 
 buttonRecognize = Button(text="Распознать", command=recognize, width=20)
+buttonTeach = Button(text="Обучить", width=20)
 buttonError = Button(text="Ошибка", width=20)
 buttonClear = Button(text="Очистить", command=clear, width=20)
 lbl0 = Label(text="Размер пера", font="Arial 10", width=15)
-lbl1 = Label(text=" ", font="Arial 30", fg="red")
-lbl2 = Label(text=" ", font="Arial 12", width=15)
+lbl1 = Label(text=" ", font="Arial 10", fg="red")
+lbl2 = Label(text=" ", font="Arial 9", width=15)
+
 
 lbl0.pack()
 
@@ -64,12 +75,12 @@ penSize_slider = Scale(from_=1, to=10, orient=HORIZONTAL)
 penSize_slider.pack()
 
 buttonRecognize.pack()
+buttonTeach.pack()
 buttonError.pack()
 buttonClear.pack()
 
 lbl1.pack()
 lbl2.pack()
-
 
 root.minsize(350, 200)
 root.maxsize(350, 200)
