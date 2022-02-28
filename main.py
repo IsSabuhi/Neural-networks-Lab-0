@@ -7,7 +7,7 @@ from tkinter import *
 
 width = 80
 height = 80
-n = 2
+b = 1 #Пороговая функция
 white = (255, 255, 255)
 
 
@@ -15,45 +15,49 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-def recognize():
+class Recog:
 
-    inverted_img = ImageOps.invert(image)
-    grayscaled_img = inverted_img.convert('L')
-    resized_img = grayscaled_img.resize((80, 80), PIL.Image.ANTIALIAS)
+    def __init__(self):
+        self.inverted_img = None
+        self.grayscaled_img = None
+        self.resized_img = None
+        self.img = None
+        self.img01 = None
+        self.w = None
+        self.data = None
+        self.w1 = None
+        self.sum_w1 = None
 
-    img = np.asarray(resized_img, dtype='uint8')
-    img01 = img / 255
+    def recognize(self):
+        self.inverted_img = ImageOps.invert(image)
+        self.grayscaled_img = self.inverted_img.convert('L')
+        self.resized_img = self.grayscaled_img.resize((80, 80), PIL.Image.ANTIALIAS)
+        self.img = np.asarray(self.resized_img, dtype='uint8')
+        self.img01 = self.img / 255
+        np.set_printoptions(threshold=np.inf)
+        self.w = np.matrix([[round(random.uniform(-0.3, 0.3), 2) for y in range(width)] for x in range(height)])
+        self.data = np.genfromtxt('test.csv', delimiter=",")
 
-    np.set_printoptions(threshold=np.inf)
+        self.w1 = np.dot(self.img01, self.w)
+        self.sum_w1 = np.sum(self.w1)
+        # print(self.sum_w1)
 
-    w = np.matrix([[round(random.uniform(-0.3, 0.3), 2) for y in range(width)] for x in range(height)])
+        if self.sum_w1 >= b:
+            print("Это крестик")
+        else:
+            print("Это нолик")
 
-    data = np.genfromtxt('test.csv', delimiter=",")
 
-    w1 = np.dot(img01, w)
-    sum_w1 = np.sum(w1)
-    print(sum_w1)
-    outputs = sigmoid(w1)
-    print(outputs)
+        lbl1['text'] = np.argmax(self.w1)
+        lbl2['text'] = 'Probability:', round(self.sum_w1, 2), '%'
 
-    # for i in range(2000):
-    #     outputs = sigmoid(w1)
-    #
-    #     err = data - outputs
-    #     adj = np.dot(w1.T, err * (outputs * (1 - outputs)) )
-    #
-    #     w += adj
-    #
-    # print("Веса после обучения")
-    # print(w)
-    #
-    # print(outputs)
 
-    # np.savetxt("test.csv", w, delimiter=",")
-    # print("Успешно сохранены веса из первого слоя.")
+rec = Recog()
 
-    lbl1['text']=np.argmax(w1),
-    lbl2['text']='Probability:',sum_w1,'%'
+
+def save_w():
+    np.savetxt("test.csv", rec.w, delimiter=",")
+    print("Успешно сохранены веса из первого слоя.")
 
 
 def paint(event):
@@ -89,13 +93,14 @@ left_frame.pack(anchor=W, padx=30)
 right_frame.pack(anchor=E)
 
 
-buttonRecognize = Button(left_frame, text="Распознать", command=recognize, width=20)
+buttonRecognize = Button(left_frame, text="Распознать", command=rec.recognize, width=20)
 buttonTeach = Button(left_frame, text="Обучить", width=20)
+buttonSave = Button(left_frame, text="Сохранить веса", command=save_w, width=20)
 buttonError = Button(left_frame,text="Ошибка", width=20)
 buttonClear = Button(left_frame, text="Очистить", command=clear, width=20)
 lbl0 = Label(left_frame, text="Размер пера", font="Arial 10", width=15)
 lbl1 = Label(left_frame, text=" ", font="Arial 10", fg="black")
-lbl2 = Label(left_frame, text=" ", font="Arial 9", width=15)
+lbl2 = Label(left_frame, text=" ", font="Arial 9", width=20)
 
 
 lbl0.pack(side=TOP)
@@ -105,11 +110,12 @@ penSize_slider.pack(side=TOP)
 
 buttonRecognize.pack(side=TOP)
 buttonTeach.pack(side=TOP)
+buttonSave.pack(side=TOP)
 buttonError.pack(side=TOP)
 buttonClear.pack(side=TOP)
 
 lbl1.pack(side=TOP)
-lbl2.pack(side=TOP)
+lbl2.pack(anchor=W, side=TOP)
 
 root.minsize(350, 250)
 root.maxsize(350, 250)
