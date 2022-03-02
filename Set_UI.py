@@ -1,14 +1,14 @@
 from tkinter import *
 from PIL import Image, ImageDraw
 import PIL
-
+from Recog import Recog
 
 Cwidth = 80
 Cheight = 80
 
 
 class Window:
-    from test import Recog
+
     rec = Recog()
 
     def __init__(self, width, height, title="MyWindow", icon=r"resources/images.ico"):
