@@ -1,7 +1,8 @@
 from tkinter import *
 from PIL import Image, ImageDraw
 import PIL
-from Recog import Recog
+
+from Recog import Recognize
 
 Cwidth = 80
 Cheight = 80
@@ -9,7 +10,7 @@ Cheight = 80
 
 class Window:
 
-    rec = Recog()
+    rec = Recognize()
 
     def __init__(self, width, height, title="MyWindow", icon=r"resources/images.ico"):
         self.root = Tk()
@@ -21,9 +22,9 @@ class Window:
         self.image = PIL.Image.new("RGB", (width, height))
         self.draw = ImageDraw.Draw(self.image)
         self.penSize_slider = 3
-        self.buttonRecognize = Button(self.left_frame, text="Распознать", command=self.rec.recognize, width=20)
+        self.buttonRecognize = Button(self.left_frame, text="Распознать", command=self.recognize_event, width=20)
         self.buttonTeach = Button(self.left_frame, text="Обучить", width=20)
-        self.buttonSave = Button(self.left_frame, text="Сохранить веса", command=self.rec.save_w, width=20)
+        self.buttonSave = Button(self.left_frame, text="Сохранить веса", command=self.save_weights_event, width=20)
         self.buttonError = Button(self.left_frame, text="Ошибка", width=20)
         self.buttonClear = Button(self.left_frame, text="Очистить", command=self.clear, width=20)
         self.lbl0 = Label(self.left_frame, text="Размер пера", font="Arial 10", width=15)
@@ -31,6 +32,13 @@ class Window:
         self.lbl2 = Label(self.left_frame, text=" ", font="Arial 9", width=15)
         if icon:
             self.root.iconbitmap(icon)
+
+
+    def recognize_event(self):
+        self.rec.recognize(self.image)
+
+    def save_weights_event(self):
+        self.rec.save_w()
 
     def draw_widgets(self):
         self.cv.bind("<B1-Motion>", self.paint)
@@ -57,8 +65,3 @@ class Window:
     def clear(self):
         self.cv.delete("all")
         self.draw.rectangle((0, 0, Cwidth, Cheight), fill=(255, 255, 255, 255))
-
-#
-# if __name__ == "__main__":
-#     window = Window(350, 250, "Лабораторная работа №0")
-#     window.run()
