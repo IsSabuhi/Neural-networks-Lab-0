@@ -4,11 +4,13 @@ import PIL
 from Recog import Recognize
 
 
+
 class Window:
 
     rec = Recognize()
 
     def __init__(self, width, height, title="MyWindow", icon=r"resources/images.ico"):
+        self.weight = None
         self.root = Tk()
         self.root.title(title)
         self.root.geometry(f"{width}x{height}")
