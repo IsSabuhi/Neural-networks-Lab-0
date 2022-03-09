@@ -23,14 +23,12 @@ class Recognize:
         self.sum_w = None
 
     def weight_init(self):
-        self.weight = [[round(random.uniform(-0.3, 0.3), 2) for y in range(self.Cwidth)] for x in range(self.Cheight)]
-        self.weight = self.weight.flatten()
+        self.weight = np.array([[(random.uniform(-0.3, 0.3)) for y in range(self.Cwidth)] for x in range(self.Cheight)]).flatten()
         return self.weight
 
     def recognize(self, image, lbl1, lbl2: Label):
         self.inverted_img = ImageOps.invert(image)
         self.grayscaled_img = self.inverted_img.convert('L')
-        self.weight_init()
         print(self.weight)
         self.resized_img = self.grayscaled_img.resize((80, 80), PIL.Image.ANTIALIAS)
         self.img = np.asarray(self.resized_img, dtype='uint8').flatten()
