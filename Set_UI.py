@@ -1,6 +1,6 @@
 from tkinter import *
-from PIL import Image, ImageDraw
 import PIL
+from PIL import Image, ImageDraw
 from Recog import Recognize
 
 
