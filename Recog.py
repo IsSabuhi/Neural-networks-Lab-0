@@ -19,12 +19,13 @@ class Recognize:
         self.a = 0.3
         self.w = None
         self.data = None
-        self.sum_elem_matrix = None
+        self.matrix = None
         self.sum_w = None
         self.error = None
 
-    def weight_file(self):
+    def weight_file(self, lbl4: Label):
         self.weight = np.genfromtxt('w.csv', delimiter=",")
+        lbl4['text'] = "Веса загружены"
         return self.weight
 
     def weight_init(self):
@@ -36,26 +37,24 @@ class Recognize:
         self.grayscaled_img = self.inverted_img.convert('L')
         self.resized_img = self.grayscaled_img.resize((80, 80), PIL.Image.ANTIALIAS)
         self.img = np.asarray(self.resized_img, dtype='uint8').flatten()
-
         self.img01 = self.img / 255
-        # self.img01 = np.array(self.img01).flatten()
+
         np.set_printoptions(threshold=np.inf)
 
-        self.sum_elem_matrix = np.dot(self.img01, self.weight)
-        self.sum_w = np.sum(self.sum_elem_matrix)
-        # print(self.sum_w)
+        self.matrix = np.dot(self.img01, self.weight)
+        self.sum_w = np.sum(self.matrix)
+        print(self.sum_w)
         if self.sum_w >= 0:
-            lbl1['text'] = 'Это крест'
+            lbl1['text'] = 'Это крестик'
         else:
             lbl1['text'] = 'Это нолик'
 
-        lbl2['text'] = self.sum_elem_matrix
-        print(self.weight)
+        lbl2['text'] = self.sum_w
 
     def train(self):
         for i in range(len(self.img01)):
             if self.img01[i] == 1:
-                self.weight = self.weight + (self.a * self.error)
+                self.weight = self.weight + (self.a * self.error * self.img01)
         print(self.weight)
 
     def btn_X(self):
@@ -66,6 +65,6 @@ class Recognize:
         self.error = -1
         self.train()
 
-    def save_w(self):
+    def save_w(self, lbl3: Label):
         np.savetxt("w.csv", self.weight, delimiter=",")
-        print("Веса успешно сохранены веса.")
+        lbl3['text'] = "Веса сохранены."

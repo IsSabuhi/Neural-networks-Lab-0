@@ -22,7 +22,7 @@ class Window:
         self.draw = ImageDraw.Draw(self.image)
         self.penSize_slider = 4
         self.buttonRecognize = Button(self.left_frame, text="Распознать", command=self.recognize_event, width=20)
-        self.buttonX = Button(self.left_frame, text="Крест", command=self.button_X_event, width=20)
+        self.buttonX = Button(self.left_frame, text="Крестик", command=self.button_X_event, width=20)
         self.buttonO = Button(self.left_frame, text="Нолик", command=self.button_O_event, width=20)
         self.buttonTeach = Button(self.left_frame, text="Обучение")
         self.buttonSave = Button(self.left_frame, text="Сохранить веса", command=self.save_weights_event, width=20)
@@ -31,6 +31,8 @@ class Window:
         self.lbl0 = Label(self.left_frame, text="Размер пера", font="Arial 10", width=15)
         self.lbl1 = Label(self.left_frame, text=" ", font="Arial 10", fg="black")
         self.lbl2 = Label(self.left_frame, text=" ", font="Arial 9", width=20)
+        self.lbl3 = Label(self.left_frame, text=" ", font="Arial 10", width=20)
+        self.lbl4 = Label(self.left_frame, text=" ", font="Arial 10", width=20)
         if icon:
             self.root.iconbitmap(icon)
 
@@ -44,15 +46,15 @@ class Window:
         self.rec.btn_O()
 
     def save_weights_event(self):
-        self.rec.save_w()
+        self.rec.save_w(self.lbl3)
 
     def weight_file_event(self):
-        self.rec.weight_file()
+        self.rec.weight_file(self.lbl4)
 
     def draw_widgets(self):
         self.cv.bind("<B1-Motion>", self.paint)
-        self.cv.pack(side=RIGHT, pady=60, padx=50)
-        self.left_frame.pack(anchor=W, ipadx=20, pady=30, side=LEFT)
+        self.cv.pack(anchor=N, side=RIGHT, pady=40, padx=50)
+        self.left_frame.pack(anchor=W, ipadx=20, pady=20, side=LEFT)
         self.buttonRecognize.pack(side=TOP)
         self.buttonX.pack(side=TOP)
         self.buttonO.pack(side=TOP)
@@ -61,6 +63,8 @@ class Window:
         self.buttonClear.pack(side=TOP)
         self.lbl1.pack(side=TOP)
         self.lbl2.pack(side=TOP)
+        self.lbl3.pack(side=TOP)
+        self.lbl4.pack(side=TOP)
 
     def run(self):
         self.rec.weight_init()
