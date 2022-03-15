@@ -4,7 +4,6 @@ import PIL
 from Recog import Recognize
 
 
-
 class Window:
 
     rec = Recognize()
@@ -25,15 +24,15 @@ class Window:
         self.buttonRecognize = Button(self.left_frame, text="Распознать", command=self.recognize_event, width=20)
         self.buttonX = Button(self.left_frame, text="Крест", command=self.button_X_event, width=20)
         self.buttonO = Button(self.left_frame, text="Нолик", command=self.button_O_event, width=20)
-        self.buttonTeach = Button(self.left_frame, text="Обучение" )
+        self.buttonTeach = Button(self.left_frame, text="Обучение")
         self.buttonSave = Button(self.left_frame, text="Сохранить веса", command=self.save_weights_event, width=20)
+        self.buttonLoadWeight = Button(self.left_frame, text="Загрузить веса", command=self.weight_file_event, width=20)
         self.buttonClear = Button(self.left_frame, text="Очистить", command=self.clear, width=20)
         self.lbl0 = Label(self.left_frame, text="Размер пера", font="Arial 10", width=15)
         self.lbl1 = Label(self.left_frame, text=" ", font="Arial 10", fg="black")
         self.lbl2 = Label(self.left_frame, text=" ", font="Arial 9", width=20)
         if icon:
             self.root.iconbitmap(icon)
-
 
     def recognize_event(self):
         self.rec.recognize(self.image, self.lbl1, self.lbl2)
@@ -47,6 +46,9 @@ class Window:
     def save_weights_event(self):
         self.rec.save_w()
 
+    def weight_file_event(self):
+        self.rec.weight_file()
+
     def draw_widgets(self):
         self.cv.bind("<B1-Motion>", self.paint)
         self.cv.pack(side=RIGHT, pady=60, padx=50)
@@ -55,11 +57,13 @@ class Window:
         self.buttonX.pack(side=TOP)
         self.buttonO.pack(side=TOP)
         self.buttonSave.pack(side=TOP)
+        self.buttonLoadWeight.pack(side=TOP)
         self.buttonClear.pack(side=TOP)
         self.lbl1.pack(side=TOP)
         self.lbl2.pack(side=TOP)
 
     def run(self):
+        self.rec.weight_init()
         self.draw_widgets()
         self.root.mainloop()
 
