@@ -2,6 +2,6 @@
 
 Для того что-бы запустить прогу нужно:\
 1.Распаковать проект и открыть в IDE\
-2.Скачать все зависимости с requirements.txt командой pip install -r requirements.txt
+2.Скачать все зависимости с requirements.txt командой pip install -r requirements.txt\
 3.Запустить прогу, либо в консоли написать main.py\
 4.Profit!
