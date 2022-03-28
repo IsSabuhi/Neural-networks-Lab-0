@@ -14,8 +14,8 @@ class Window:
         self.root.title(title)
         self.root.geometry(f"{width}x{height}")
         self.white = (255, 255, 255)
-        self.Cwidth = 80
-        self.Cheight = 80
+        self.Cwidth = 100
+        self.Cheight = 100
         self.left_frame = Frame(self.root)
         self.cv = Canvas(width=self.Cwidth, height=self.Cheight, bg='white')
         self.image = PIL.Image.new("RGB", (self.Cwidth, self.Cheight), self.white)
@@ -24,7 +24,7 @@ class Window:
         self.buttonRecognize = Button(self.left_frame, text="Распознать", command=self.recognize_event, width=20)
         self.buttonX = Button(self.left_frame, text="Крестик", command=self.button_X_event, width=20)
         self.buttonO = Button(self.left_frame, text="Нолик", command=self.button_O_event, width=20)
-        self.buttonTeach = Button(self.left_frame, text="Обучение")
+        self.buttonInitWeights = Button(self.left_frame, text="Инициализировать веса", command=self.rec.weight_init, width=20)
         self.buttonSave = Button(self.left_frame, text="Сохранить веса", command=self.save_weights_event, width=20)
         self.buttonLoadWeight = Button(self.left_frame, text="Загрузить веса", command=self.weight_file_event, width=20)
         self.buttonClear = Button(self.left_frame, text="Очистить", command=self.clear, width=20)
@@ -54,10 +54,11 @@ class Window:
     def draw_widgets(self):
         self.cv.bind("<B1-Motion>", self.paint)
         self.cv.pack(anchor=N, side=RIGHT, pady=40, padx=50)
-        self.left_frame.pack(anchor=W, ipadx=20, pady=20, side=LEFT)
+        self.left_frame.pack(anchor=W, padx=5, pady=20, side=LEFT)
         self.buttonRecognize.pack(side=TOP)
         self.buttonX.pack(side=TOP)
         self.buttonO.pack(side=TOP)
+        self.buttonInitWeights.pack(side=TOP)
         self.buttonSave.pack(side=TOP)
         self.buttonLoadWeight.pack(side=TOP)
         self.buttonClear.pack(side=TOP)
